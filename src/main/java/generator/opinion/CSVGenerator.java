@@ -30,6 +30,9 @@ public class CSVGenerator {
 
     private static final int ITERATIONS = 25000000;
 
+    private static final int OPINIONS_PER_USER = 20;
+    private static final int EXPANSIONS = 10;
+
     private static final Logger logger = LoggerFactory.getLogger(CSVGenerator.class);
 
     public void generateCSVFile(String filename) {
@@ -77,6 +80,82 @@ public class CSVGenerator {
                 writer.append("document" + index + "\n");
             }
             System.out.println("Done. Generated " + ITERATIONS + " tuples.");
+
+            writer.flush();
+
+            writer.close();
+
+        } catch (IOException e) {
+            logger.error("Error writing csv file to " + filename, e);
+        }
+    }
+
+    public void generateCSVFile2(String filename) {
+        try {
+            FileWriter writer = new FileWriter(filename);
+
+            List<String> names = new ArrayList<String>();
+            List<String> targets = new ArrayList<String>();
+            List<String> sentiments = new ArrayList<String>();
+            List<Double> orientations = new ArrayList<Double>();
+
+            parseWords("/opt/solr/words/names.txt", names);
+            parseWords("/opt/solr/words/nouns.txt", targets);
+            parseSentimentWords("/opt/solr/words/sentiments.txt", sentiments,orientations);
+
+            Random random = new Random();
+
+            logger.debug("Started generating data.");
+
+            writer.append("id,holder,target,sentimentWord,sentimentOrientation,docId,targetExpansions,sentimentWordExpansions\n");
+
+            int holderNumber = names.size();
+
+            for (int i = 0; i < holderNumber; i++) {
+                System.out.println(i + "/" + holderNumber);
+                for (int j = 0; j < OPINIONS_PER_USER; j++) {
+                    int index;
+                    int k = i * OPINIONS_PER_USER + j;
+
+                    writer.append(k + ",");
+
+                    index = random.nextInt(names.size());
+                    writer.append(names.get(index) + ",");
+
+                    index = random.nextInt(targets.size());
+                    writer.append(targets.get(index) + "," );
+
+                    index = random.nextInt(sentiments.size());
+                    writer.append(sentiments.get(index) + ",");
+
+                    index = random.nextInt(orientations.size());
+                    writer.append(orientations.get(index).toString() + ",");
+
+                    writer.append("document" + index + ",");
+
+                    writer.append("\"");
+                    for (int l = 0; l < EXPANSIONS; l++) {
+                        index = random.nextInt(targets.size());
+                        writer.append(targets.get(index));
+                        if (l + 1 != EXPANSIONS) {
+                            writer.append(",");
+                        }
+                    }
+                    writer.append("\",");
+
+                    writer.append("\"");
+                    for (int l = 0; l < EXPANSIONS; l++) {
+                        index = random.nextInt(targets.size());
+                        writer.append(sentiments.get(index));
+                        if (l + 1 != EXPANSIONS) {
+                            writer.append(",");
+                        }
+                    }
+                    writer.append("\"\n");
+                }
+            }
+
+            System.out.println("Done. ");
 
             writer.flush();
 

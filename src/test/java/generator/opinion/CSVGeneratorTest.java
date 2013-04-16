@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class CSVGeneratorTest {
 
     private static final String OUTPUT_DIR = "/opt/solr/";
-    private static final String OUTPUT_FILE = "opinions.csv";
+    private static final String OUTPUT_FILE = "opinions_2.csv";
 
     @Autowired
     private CSVGenerator generator;
@@ -31,7 +31,7 @@ public class CSVGeneratorTest {
     @Test
     public void testCreateCSVDocument() {
 
-        generator.generateCSVFile(OUTPUT_DIR + OUTPUT_FILE);
+        generator.generateCSVFile2(OUTPUT_DIR + OUTPUT_FILE);
     }
 
 
