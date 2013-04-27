@@ -28,9 +28,9 @@ public class CSVGenerator {
 
     private String[] sentimentWords;
 
-    private static final int ITERATIONS = 25000000;
+    private static final int ITERATIONS = 6000000;
 
-    private static final int OPINIONS_PER_USER = 20;
+    private static final int OPINIONS_PER_USER = 40;
     private static final int EXPANSIONS = 10;
 
     private static final Logger logger = LoggerFactory.getLogger(CSVGenerator.class);
