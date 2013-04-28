@@ -28,9 +28,9 @@ public class CSVGenerator {
 
     private String[] sentimentWords;
 
-    private static final int ITERATIONS = 6000000;
+    private static final int ITERATIONS = 100000;
 
-    private static final int OPINIONS_PER_USER = 40;
+    private static final int OPINIONS_PER_USER = 30;
     private static final int EXPANSIONS = 10;
 
     private static final Logger logger = LoggerFactory.getLogger(CSVGenerator.class);
@@ -107,7 +107,16 @@ public class CSVGenerator {
 
             logger.debug("Started generating data.");
 
-            writer.append("id,holder,target,sentimentWord,sentimentOrientation,docId,targetExpansions,sentimentWordExpansions\n");
+            writer.append("id," +
+                    "holder," +
+                    "target," +
+                    "sentimentWord," +
+                    "sentimentOrientation," +
+                    "docId," +
+                    "targetExpansions," +
+                    "teWeights," +
+                    "sentimentWordExpansions," +
+                    "swWeights\n");
 
             int holderNumber = names.size();
 
@@ -117,22 +126,29 @@ public class CSVGenerator {
                     int index;
                     int k = i * OPINIONS_PER_USER + j;
 
+                    //id
                     writer.append(k + ",");
 
+                    //holder
                     index = random.nextInt(names.size());
                     writer.append(names.get(index) + ",");
 
+                    //target
                     index = random.nextInt(targets.size());
                     writer.append(targets.get(index) + "," );
 
+                    //sentiment word
                     index = random.nextInt(sentiments.size());
                     writer.append(sentiments.get(index) + ",");
 
+                    //sentiment orientation
                     index = random.nextInt(orientations.size());
                     writer.append(orientations.get(index).toString() + ",");
 
+                    //document
                     writer.append("document" + index + ",");
 
+                    //target expansions
                     writer.append("\"");
                     for (int l = 0; l < EXPANSIONS; l++) {
                         index = random.nextInt(targets.size());
@@ -143,10 +159,31 @@ public class CSVGenerator {
                     }
                     writer.append("\",");
 
+                    //target expansion weights
+                    writer.append("\"");
+                    for (int l = 0; l < EXPANSIONS; l++) {
+                        writer.append(String.format("%1$.2f",random.nextDouble()));
+                        if (l + 1 != EXPANSIONS) {
+                            writer.append(",");
+                        }
+                    }
+                    writer.append("\",");
+
+                    //sentiment word expansions
                     writer.append("\"");
                     for (int l = 0; l < EXPANSIONS; l++) {
                         index = random.nextInt(targets.size());
                         writer.append(sentiments.get(index));
+                        if (l + 1 != EXPANSIONS) {
+                            writer.append(",");
+                        }
+                    }
+                    writer.append("\",");
+
+                    //sentiment word expansion weights
+                    writer.append("\"");
+                    for (int l = 0; l < EXPANSIONS; l++) {
+                        writer.append(String.format("%1$.2f",random.nextDouble() * 2 - 1));
                         if (l + 1 != EXPANSIONS) {
                             writer.append(",");
                         }
