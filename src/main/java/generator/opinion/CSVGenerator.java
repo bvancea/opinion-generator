@@ -28,7 +28,7 @@ public class CSVGenerator {
 
     private String[] sentimentWords;
 
-    private static final int ITERATIONS = 100000;
+    private static final int ITERATIONS = 33333;
 
     private static final int OPINIONS_PER_USER = 30;
     private static final int EXPANSIONS = 10;
